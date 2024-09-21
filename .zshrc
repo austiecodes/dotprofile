@@ -1,5 +1,5 @@
 # git alias  
-source ~/.zsh/gitalias 
+source ~/.zsh/git.plugin.zsh 
 # >> ssh shorts
 source ~/.zsh/sshshorts
 
