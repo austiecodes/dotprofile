@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Determine OS distribution (Debian/Ubuntu only)
+if [[ -f /etc/os-release ]]; then
+  . /etc/os-release
+  OS=$ID
+  [[ "$OS" != "ubuntu" && "$OS" != "debian" ]] && \
+    echo "Unsupported OS: $OS. Only Debian and Ubuntu are supported." >&2 && exit 1
+elif type lsb_release >/dev/null 2>&1; then
+  OS=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
+  [[ "$OS" != "ubuntu" && "$OS" != "debian" ]] && \
+    echo "Unsupported OS: $OS. Only Debian and Ubuntu are supported." >&2 && exit 1
+else
+  echo "Unable to determine OS distribution. Exiting." >&2
+  exit 1
+fi
+
+
 # Update apt
 sudo apt update -y
 
@@ -37,7 +53,8 @@ echo 'export PATH=$PATH:/usr/local/go/bin' >> ${ZDOTDIR:-$HOME}/.zshrc
 
 # install nginx
 sudo apt install nginx -y
-sudo systemctl status nginx
+sudo systemctl enable nginx -y 
+sudo systemctl start nginx -y
 
 # install docker
 for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
@@ -45,19 +62,17 @@ for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+sudo curl -fsSL https://download.docker.com/linux/$OS/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/$OS \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt-get update
 
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-sudo docker run hello-world
 
 
 
