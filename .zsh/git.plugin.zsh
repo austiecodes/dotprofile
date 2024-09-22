@@ -98,7 +98,6 @@ function ggpnp() {
     ggl "${*}" && ggp "${*}"
   fi
 }
-compdef _git ggpnp=git-checkout
 
 alias ggpur='ggu'
 alias g='git'
@@ -180,7 +179,6 @@ function gccd() {
   # otherwise parse the repo URI and use the last part as the directory
   [[ -d "$_" ]] && cd "$_" || cd "${${repo:t}%.git/#}"
 }
-compdef _git gccd=git-clone
 
 alias gcam='git commit --all --message'
 alias gcas='git commit --all --signoff'
@@ -208,14 +206,12 @@ alias gds='git diff --staged'
 alias gdw='git diff --word-diff'
 
 function gdv() { git diff -w "$@" | view - }
-compdef _git gdv=git-diff
 
 alias gdup='git diff @{upstream}'
 
 function gdnolock() {
   git diff "$@" ":(exclude)package-lock.json" ":(exclude)*.lock"
 }
-compdef _git gdnolock=git-diff
 
 alias gdt='git diff-tree --no-commit-id --name-only -r'
 alias gf='git fetch'
@@ -245,7 +241,6 @@ function _git_log_prettily(){
     git log --pretty=$1
   fi
 }
-compdef _git _git_log_prettily=git-log
 
 alias glp='_git_log_prettily'
 alias glg='git log --stat'
@@ -272,7 +267,6 @@ function ggu() {
   [[ "$#" != 1 ]] && local b="$(git_current_branch)"
   git pull --rebase origin "${b:=$1}"
 }
-compdef _git ggu=git-checkout
 
 alias gprom='git pull --rebase origin $(git_main_branch)'
 alias gpromi='git pull --rebase=interactive origin $(git_main_branch)'
@@ -288,7 +282,6 @@ function ggl() {
     git pull origin "${b:=$1}"
   fi
 }
-compdef _git ggl=git-checkout
 
 alias gluc='git pull upstream $(git_current_branch)'
 alias glum='git pull upstream $(git_main_branch)'
@@ -299,7 +292,6 @@ function ggf() {
   [[ "$#" != 1 ]] && local b="$(git_current_branch)"
   git push --force origin "${b:=$1}"
 }
-compdef _git ggf=git-checkout
 
 alias gpf!='git push --force'
 is-at-least 2.30 "$git_version" \
@@ -310,7 +302,6 @@ function ggfl() {
   [[ "$#" != 1 ]] && local b="$(git_current_branch)"
   git push --force-with-lease origin "${b:=$1}"
 }
-compdef _git ggfl=git-checkout
 
 alias gpsup='git push --set-upstream origin $(git_current_branch)'
 is-at-least 2.30 "$git_version" \
@@ -329,7 +320,6 @@ function ggp() {
     git push origin "${b:=$1}"
   fi
 }
-compdef _git ggp=git-checkout
 
 alias gpu='git push upstream'
 alias grb='git rebase'
