@@ -53,8 +53,8 @@ echo 'export PATH=$PATH:/usr/local/go/bin' >> ${ZDOTDIR:-$HOME}/.zshrc
 
 # install nginx
 sudo apt install nginx -y
-sudo systemctl enable nginx -y 
-sudo systemctl start nginx -y
+sudo systemctl enable nginx 
+sudo systemctl start nginx
 
 # install docker
 for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
